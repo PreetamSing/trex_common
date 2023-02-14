@@ -1,0 +1,7 @@
+*.zip
+*.tar
+Cargo.lock
+target/
+logs/
+keys/
+test_keys/
