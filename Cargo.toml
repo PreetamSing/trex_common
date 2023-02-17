@@ -6,6 +6,8 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+anyhow = "1"
+buildstructor = "0.5.1"
 chrono = "0.4"
 jsonwebtoken = "8"
 rsa = { version = "0.8.1", features = ["pkcs5"]}
