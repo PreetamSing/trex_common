@@ -1,6 +1,5 @@
 *.zip
 *.tar
-Cargo.lock
 target/
 logs/
 keys/
