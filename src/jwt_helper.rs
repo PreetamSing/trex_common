@@ -9,9 +9,9 @@ use std::process::Command;
 use std::{fs, io, path::Path};
 
 pub const ALGORITHM: Algorithm = Algorithm::RS256;
-const SECRET_ABSENT: &'static str = "`pvt_key_secret` is required for generating token.";
-const PVT_KEY_ABSENT: &'static str = "`encrypted_pvt_key` is required for generating token.";
-const PUB_KEY_ABSENT: &'static str = "`pub_key` is required for verifying token.";
+const SECRET_ABSENT: &str = "`pvt_key_secret` is required for generating token.";
+const PVT_KEY_ABSENT: &str = "`encrypted_pvt_key` is required for generating token.";
+const PUB_KEY_ABSENT: &str = "`pub_key` is required for verifying token.";
 
 /// This helper uses `RS256` algorithm.
 ///
@@ -22,10 +22,10 @@ const PUB_KEY_ABSENT: &'static str = "`pub_key` is required for verifying token.
 /// use std::time::Duration;
 /// use trex_common::jwt_helper::{generate_keys, JWTHelper};
 ///
-/// const TEST_KEYS_DIR: &'static str = "./test_keys/";
-/// const PVT_KEY_FILE: &'static str = "rsa";
-/// const PUB_KEY_FILE: &'static str = "rsa.pub";
-/// const PVT_KEY_SECRET: &'static str = "testpassword";
+/// const TEST_KEYS_DIR: &str = "./test_keys/";
+/// const PVT_KEY_FILE: &str = "rsa";
+/// const PUB_KEY_FILE: &str = "rsa.pub";
+/// const PVT_KEY_SECRET: &str = "testpassword";
 ///
 /// generate_keys(TEST_KEYS_DIR, PVT_KEY_FILE, PUB_KEY_FILE, PVT_KEY_SECRET)?;
 ///
@@ -89,7 +89,7 @@ impl JWTHelper {
         //  whereas `from_rsa_pem` just needs reference to key. Try to avoid the reallocation if any.
         let key = &EncodingKey::from_rsa_pem(decrypted_key.to_pkcs8_pem(Default::default())?.as_bytes())?;
 
-        Ok(encode(&header, &claims, &key)?)
+        Ok(encode(&header, &claims, key)?)
     }
 
     pub fn validate_token(&self, token: &str) -> Result<String, anyhow::Error> {
@@ -97,7 +97,7 @@ impl JWTHelper {
         validation.validate_exp = true;
         validation.leeway = self.leeway;
         let data = decode::<Claims>(
-            &token,
+            token,
             &DecodingKey::from_rsa_pem(
                 self.pub_key
                     .as_ref()
